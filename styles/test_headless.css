@@ -1,0 +1,27 @@
+th {
+  font-size: large;
+}
+td:last-child {
+  max-width: 300px;
+  word-wrap: break-word;
+}
+td:first-child {
+  text-align: center;
+}
+tr.normal {
+  background-color: #00ff00;
+}
+tr.headless {
+  background-color: #ff0000;
+}
+tr.undefined {
+  background-color: #ffff00;
+}
+table, th, td {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  text-align: center;
+}
