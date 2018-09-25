@@ -1,0 +1,48 @@
+th {
+  font-size: large;
+}
+td:last-child {
+  max-width: 300px;
+  word-wrap: break-word;
+}
+td:first-child {
+  text-align: center;
+}
+.headful {
+  background-color: #00ff00;
+}
+.headless {
+  background-color: #ff0000;
+}
+.undefined {
+  background-color: #ffff00;
+}
+table, th, td {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+.legend ul {
+  margin: 5px;
+  margin-top: 10px;
+  padding: 0;
+  float: left;
+  list-style: none;
+}
+.legend ul li {
+  list-style: none;
+  margin-left: 0;
+  margin-bottom: 5px;
+}
+.legend ul li span {
+  display: block;
+  float: left;
+  height: 16px;
+  width: 16px;
+  margin-right: 5px;
+  margin-left: 0;
+  border: 1px solid #999;
+}
