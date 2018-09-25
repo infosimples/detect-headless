@@ -8,13 +8,13 @@ td:last-child {
 td:first-child {
   text-align: center;
 }
-tr.normal {
+.headful {
   background-color: #00ff00;
 }
-tr.headless {
+.headless {
   background-color: #ff0000;
 }
-tr.undefined {
+.undefined {
   background-color: #ffff00;
 }
 table, th, td {
@@ -24,4 +24,25 @@ table, th, td {
 th, td {
   padding: 10px;
   text-align: center;
+}
+.legend ul {
+  margin: 5px;
+  margin-top: 10px;
+  padding: 0;
+  float: left;
+  list-style: none;
+}
+.legend ul li {
+  list-style: none;
+  margin-left: 0;
+  margin-bottom: 5px;
+}
+.legend ul li span {
+  display: block;
+  float: left;
+  height: 16px;
+  width: 16px;
+  margin-right: 5px;
+  margin-left: 0;
+  border: 1px solid #999;
 }

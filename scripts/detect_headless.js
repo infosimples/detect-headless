@@ -19,33 +19,37 @@ async function testBrowser(name, testFunction) {
   if (result == HEADLESS)
     row.classList.add("headless");
   else if (result == HEADFUL)
-    row.classList.add("normal");
+    row.classList.add("headful");
   else
     row.classList.add("undefined");
+}
+
+function writeToBlock(block, text) {
+  block.innerHTML = text;
 }
 
 // Test for user agent
 function testUserAgent(resultBlock) {
   let agent = navigator.userAgent;
 
-  userAgentWriteResult(resultBlock, agent);
+  writeToBlock(resultBlock, agent);
   return /headless/i.test(agent);
 }
 
-function userAgentWriteResult(resultBlock, agent) {
-  resultBlock.innerHTML = agent;
+// Test for app version (almost equal to user agent)
+function testAppVersion(resultBlock) {
+  let appVersion = navigator.appVersion;
+
+  writeToBlock(resultBlock, appVersion);
+  return /headless/i.test(appVersion);
 }
 
 // Test for plugins
 function testPlugins(resultBlock) {
   let length = navigator.plugins.length;
 
-  pluginsWriteResult(resultBlock, length);
+  writeToBlock(resultBlock, `Detected ${length} plugins`);
   return length === 0 ? UNDEFINED : HEADFUL;
-}
-
-function pluginsWriteResult(resultBlock, length) {
-  resultBlock.innerHTML = `Detected ${length} plugins`;
 }
 
 // Test for languages
@@ -53,14 +57,10 @@ function testLanguages(resultBlock) {
   let language        = navigator.language;
   let languagesLength = navigator.languages.length;
 
-  languagesWriteResult(resultBlock, language, languagesLength);
+  writeToBlock(resultBlock, `Detected ${languagesLength} languages and using ${language}`);
   if (!language || languagesLength === 0)
     return HEADLESS;
   return UNDEFINED;
-}
-
-function languagesWriteResult(resultBlock, language, languagesLength) {
-  resultBlock.innerHTML = `Detected ${languagesLength} languages and using ${language}`;
 }
 
 // Test for webdriver (headless browser has this flag true)
@@ -73,9 +73,9 @@ function testWebdriver(resultBlock) {
 
 function webdriverWriteResult(resultBlock, webdriver) {
   if (webdriver)
-    resultBlock.innerHTML = "Webdriver present";
+    writeToBlock(resultBlock, "Webdriver present");
   else
-    resultBlock.innerHTML = "Missing webdriver";
+    writeToBlock(resultBlock, "Missing webdriver");
 }
 
 // Test for time elapsed after alert(). If it's closed too fast (< 30ms), it means
@@ -93,7 +93,7 @@ function testTimeElapse(resultBlock) {
 function timeElapseWriteResult(resultBlock, elapse) {
   let signal = elapse < 30 ? "<": ">";
 
-  resultBlock.innerHTML = `Time elapsed to close alert: ${elapse} (${signal} 30)`;
+  writeToBlock(resultBlock, `Time elapsed to close alert: ${elapse} (${signal} 30)`);
 }
 
 // Test for chrome element (especific for google chrome browser)
@@ -106,9 +106,9 @@ function testChrome(resultBlock) {
 
 function chromeWriteResult(resultBlock, chrome) {
   if (chrome)
-    resultBlock.innerHTML = "Chrome element present";
+    writeToBlock(resultBlock, "Chrome element present");
   else
-    resultBlock.innerHTML = "Chrome element not present";
+    writeToBlock(resultBlock, "Chrome element not present");
 }
 
 // Test for permission
@@ -130,10 +130,10 @@ async function testPermission(resultBlock) {
 
 function permissionWriteResult(resultBlock, permissionStatus, notificationPermission) {
   if (permissionStatus && notificationPermission) {
-    resultBlock.innerHTML = `Permission stauts is "${permissionStatus.state}" and notification
-                             permission is "${notificationPermission}"`;
+    writeToBlock(resultBlock, `Permission stauts is "${permissionStatus.state}" and notification
+                              permission is "${notificationPermission}"`);
   } else {
-    resultBlock.innerHTML = `Object navigator.permissions is undefined`;
+    writeToBlock(resultBlock, "Object navigator.permissions is undefined");
   }
 }
 
@@ -157,9 +157,9 @@ function testDevtool(resultBlock) {
 
 function devtoolWriteResult(resultBlock, usingDevTools) {
   if (usingDevTools)
-    resultBlock.innerHTML = "Using devtools protocol";
+    writeToBlock(resultBlock, "Using devtools protocol");
   else
-    resultBlock.innerHTML = "Not using devtools protocol";
+    writeToBlock(resultBlock, "Not using devtools protocol");
 }
 
 // Test for broken image
@@ -171,30 +171,66 @@ function testImage(resultBlock) {
   body.appendChild(image);
 
   image.onerror = function(){
-    imageWriteResult(resultBlock, image.width, image.height);
+    writeToBlock(resultBlock, `Broken image has width ${image.width} and height ${image.height}`);
     if(image.width === 0 && image.height === 0)
       return HEADLESS;
     return HEADFUL;
   }
 }
 
-function imageWriteResult(resultBlock, width, height) {
-  resultBlock.innerHTML = `Broken image has width ${width} and height ${height}`;
+// Test for outerHeight and outerWidth
+function testOuter(resultBlock) {
+  let outerHeight = window.outerHeight;
+  let outerWidth  = window.outerWidth;
+
+  writeToBlock(resultBlock, `Outerheight: ${outerHeight} and outerwidth: ${outerWidth}`);
+  return (outerHeight === 0 && outerWidth === 0) ? HEADLESS : HEADFUL;
+}
+
+// Test for screenY
+function testScreenY(resultBlock) {
+  let screenY = window.screenY;
+
+  writeToBlock(resultBlock, `ScreenY: ${screenY}`);
+  return screenY === 0 ? HEADLESS : HEADFUL;
+}
+
+// Test for connection-rtt
+function testConnecionRtt(resultBlock) {
+  let connectionRtt = navigator.connection.rtt;
+
+  connectionRttWriteResult(resultBlock, connectionRtt);
+  if (connectionRtt === undefined) {
+    return UNDEFINED;
+  } else {
+    return connectionRtt === 0 ? HEADLESS : HEADFUL;
+  }
+}
+
+function connectionRttWriteResult(resultBlock, connectionRtt) {
+  if (connectionRtt === undefined)
+    writeToBlock(resultBlock, "Connection-rtt not defined");
+  else
+    writeToBlock(resultBlock, `Connection-rtt: ${connectionRtt}`);
 }
 
 /*
  *  Here is where we execute all the tests specified above
  */
 const tests = [
-  { name: "User Agent",       id: "user-agent",     testFunction: testUserAgent  },
-  { name: "Plugins",          id: "plugins",        testFunction: testPlugins    },
-  { name: "Languages",        id: "languages",      testFunction: testLanguages  },
-  { name: "Webdriver",        id: "webdriver",      testFunction: testWebdriver  },
-  { name: "Time Elapse",      id: "time-elapse",    testFunction: testTimeElapse },
-  { name: "Chrome",           id: "chrome-element", testFunction: testChrome     },
-  { name: "Permission",       id: "permission",     testFunction: testPermission },
-  { name: "Devtool Protocol", id: "devtool",        testFunction: testDevtool    },
-  { name: "Broken Image",     id: "image",          testFunction: testImage      }
+  { name: "User Agent",       id: "user-agent",     testFunction: testUserAgent    },
+  { name: "App Version",      id: "app-version",    testFunction: testAppVersion   },
+  { name: "Plugins",          id: "plugins",        testFunction: testPlugins      },
+  { name: "Languages",        id: "languages",      testFunction: testLanguages    },
+  { name: "Webdriver",        id: "webdriver",      testFunction: testWebdriver    },
+  { name: "Time Elapse",      id: "time-elapse",    testFunction: testTimeElapse   },
+  { name: "Chrome",           id: "chrome-element", testFunction: testChrome       },
+  { name: "Permission",       id: "permission",     testFunction: testPermission   },
+  { name: "Devtool Protocol", id: "devtool",        testFunction: testDevtool      },
+  { name: "Broken Image",     id: "image",          testFunction: testImage        },
+  { name: "Outer dimensions", id: "outer",          testFunction: testOuter        },
+  { name: "ScreenY",          id: "screeny",        testFunction: testScreenY      },
+  { name: "Connection Rtt",   id: "connection-rtt", testFunction: testConnecionRtt },
 ];
 
 tests.forEach(test => {
@@ -211,8 +247,8 @@ function generateTableRow(name, id) {
   row.id = id;
 
   // Insert the name and result cell to the row
-  let nameBlock  = row.insertCell();
+  let nameBlock   = row.insertCell();
   let resultBlock = row.insertCell();
-  nameBlock.innerHTML = name;
+  writeToBlock(nameBlock, name);
   resultBlock.id = `${id}-result`;
 }
