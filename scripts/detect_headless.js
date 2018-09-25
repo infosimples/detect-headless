@@ -197,7 +197,8 @@ function testScreenY(resultBlock) {
 
 // Test for connection-rtt
 function testConnecionRtt(resultBlock) {
-  let connectionRtt = navigator.connection.rtt;
+  let connection    = navigator.connection;
+  let connectionRtt = connection ? connection.rtt : undefined;
 
   connectionRttWriteResult(resultBlock, connectionRtt);
   if (connectionRtt === undefined) {
