@@ -26,6 +26,7 @@ async function testBrowser(name, testFunction) {
 
 function writeToBlock(block, text) {
   block.innerHTML = text;
+  generateComment(block.id, text);
 }
 
 // Test for user agent
@@ -187,14 +188,6 @@ function testOuter(resultBlock) {
   return (outerHeight === 0 && outerWidth === 0) ? HEADLESS : HEADFUL;
 }
 
-// Test for screenY
-function testScreenY(resultBlock) {
-  let screenY = window.screenY;
-
-  writeToBlock(resultBlock, `ScreenY: ${screenY}`);
-  return screenY === 0 ? HEADLESS : HEADFUL;
-}
-
 // Test for connection-rtt
 function testConnecionRtt(resultBlock) {
   let connection    = navigator.connection;
@@ -266,7 +259,6 @@ const tests = [
   { name: "Devtool Protocol", id: "devtool",        testFunction: testDevtool      },
   { name: "Broken Image",     id: "image",          testFunction: testImage        },
   { name: "Outer dimensions", id: "outer",          testFunction: testOuter        },
-  { name: "ScreenY",          id: "screeny",        testFunction: testScreenY      },
   { name: "Connection Rtt",   id: "connection-rtt", testFunction: testConnecionRtt },
   { name: "Mouse Move",       id: "mouse-move",     testFunction: testMouseMove    },
 ];
@@ -275,6 +267,13 @@ tests.forEach(test => {
   generateTableRow(test.name, test.id);
   testBrowser(test.id, test.testFunction, test.resultFunction);
 });
+
+function generateComment(test, result) {
+  if (/.*-result/.test(test)) {
+    let comment = document.createComment(`${test}: ${result}`);
+    document.body.appendChild(comment);
+  }
+}
 
 // Generate a row for each test
 function generateTableRow(name, id) {
