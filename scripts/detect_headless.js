@@ -215,6 +215,42 @@ function connectionRttWriteResult(resultBlock, connectionRtt) {
     writeToBlock(resultBlock, `Connection-rtt: ${connectionRtt}`);
 }
 
+// Test for mouse event (we're going to analyze attributes movementX and movementY)
+function testMouseMove(resultBlock) {
+  let zeroMovement = true;
+  let mouseEventCounter = 0;
+
+  // set mousemove listener to body
+  document.getElementsByTagName("body")[0].addEventListener("mousemove", mouseEvent);
+
+  writeToBlock(resultBlock, "Move your mouse");
+
+  function mouseEvent(event) {
+    zeroMovement = zeroMovement && (event.movementX === 0 && event.movementY === 0);
+
+    // Analyze 50 mouse events until give result
+    if (mouseEventCounter > 50) {
+      document.getElementsByTagName("body")[0].removeEventListener("mousemove", mouseEvent);
+      mouseMoveWriteResult(resultBlock, zeroMovement);
+
+      resultBlock.parentElement.classList.remove("undefined");
+      if (zeroMovement)
+        resultBlock.parentElement.classList.add("headless");
+      else
+        resultBlock.parentElement.classList.add("headful");
+    }
+
+    mouseEventCounter++;
+  }
+}
+
+function mouseMoveWriteResult(resultBlock, zeroMovement) {
+  if (zeroMovement)
+    writeToBlock(resultBlock, "MovementX and movementY are 0 in every mouse event");
+  else
+    writeToBlock(resultBlock, "MovementX and movementY vary in mouse events");
+}
+
 /*
  *  Here is where we execute all the tests specified above
  */
@@ -232,6 +268,7 @@ const tests = [
   { name: "Outer dimensions", id: "outer",          testFunction: testOuter        },
   { name: "ScreenY",          id: "screeny",        testFunction: testScreenY      },
   { name: "Connection Rtt",   id: "connection-rtt", testFunction: testConnecionRtt },
+  { name: "Mouse Move",       id: "mouse-move",     testFunction: testMouseMove    },
 ];
 
 tests.forEach(test => {
