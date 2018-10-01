@@ -10,6 +10,12 @@ Access <https://infosimples.github.io/detect-headless> to run several headless d
 
 - **Plugins:** headless browsers don't have any plugins. So we can say that if it has plugin it's headful, but not otherwise since some browsers, like Firefox, don't have default plugins.
 
+- **Plugins Prototype:** check if the `Plugin` and `PluginsArray` prototype are correct.
+
+- **Mime Type:** similar to **Plugins** test, where headless browsers don't have any mime types
+
+- **Mime Type Prototype:** check if the `MimeType` and `MimeTypeArray`prototype are correct.
+
 - **Languages:** all headful browser has at least one language. So we can say that if it has no language it's headless.
 
 - **Webdriver:** this property is true when running in a headless browser.
