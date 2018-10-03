@@ -12,7 +12,7 @@ Access <https://infosimples.github.io/detect-headless> to run several headless d
 
 - **Plugins Prototype:** check if the `Plugin` and `PluginsArray` prototype are correct.
 
-- **Mime Type:** similar to **Plugins** test, where headless browsers don't have any mime types
+- **Mime Type:** similar to **Plugins** test, where headless browsers don't have any mime type
 
 - **Mime Type Prototype:** check if the `MimeType` and `MimeTypeArray`prototype are correct.
 
@@ -22,7 +22,7 @@ Access <https://infosimples.github.io/detect-headless> to run several headless d
 
 - **Time elapse:** it pops an `alert()` on page and if it's closed too fast, means that it's headless.
 
-- **Chrome element:** it's specific for `chrome` browser that has a element `window.chrome`.
+- **Chrome element:** it's specific for `chrome` browser that has an element `window.chrome`.
 
 - **Permission:** in headless mode `Notification.permission` and `navigator.permissions.query` report contradictory values.
 
@@ -30,7 +30,7 @@ Access <https://infosimples.github.io/detect-headless> to run several headless d
 
 - **Broken Image:** all browser has a default `nonzero` broken image size, and this may not happen on a headless browser.
 
-- **Outer Dimension:** the attributes `outerHeight` and `outerWidth`  have value 0 on headless browser.
+- **Outer Dimension:** the attributes `outerHeight` and `outerWidth` have value 0 on headless browser.
 
 - **Connection Rtt:** The attribute `navigator.connection.rtt`,if present, has value 0 on headless browser.
 

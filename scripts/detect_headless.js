@@ -72,7 +72,7 @@ function writePluginsPrototypeResult(resultBlock, correctPrototypes) {
 
 // Test for mime type
 function testMime(resultBlock) {
-  let length = navigator.plugins.length;
+  let length = navigator.mimeTypes.length;
 
   writeToBlock(resultBlock, `Detected ${length} mime types`);
   return length === 0 ? UNDEFINED : HEADFUL;
