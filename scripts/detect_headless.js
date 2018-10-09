@@ -26,6 +26,7 @@ async function testBrowser(name, testFunction) {
 
 function writeToBlock(block, text) {
   block.innerHTML = text;
+  generateComment(block.id, text);
 }
 
 // Test for user agent
@@ -51,6 +52,49 @@ function testPlugins(resultBlock) {
   writeToBlock(resultBlock, `Detected ${length} plugins`);
   return length === 0 ? UNDEFINED : HEADFUL;
 }
+
+// Tests for plugins prototype
+function testPluginsPrototype(resultBlock) {
+  let correctPrototypes = PluginArray.prototype === navigator.plugins.__proto__;
+  if (navigator.plugins.length > 0)
+    correctPrototypes &= Plugin.prototype === navigator.plugins[0].__proto__;
+
+  writePluginsPrototypeResult(resultBlock, correctPrototypes);
+  return correctPrototypes ? HEADFUL : HEADLESS;
+}
+
+function writePluginsPrototypeResult(resultBlock, correctPrototypes) {
+  if (correctPrototypes)
+    writeToBlock(resultBlock, `PluginArray and Plugin prototype are consistent`);
+  else
+    writeToBlock(resultBlock, `PluginArray or Plugin prototype aren't consistent`);
+}
+
+// Test for mime type
+function testMime(resultBlock) {
+  let length = navigator.mimeTypes.length;
+
+  writeToBlock(resultBlock, `Detected ${length} mime types`);
+  return length === 0 ? UNDEFINED : HEADFUL;
+}
+
+// Tests for mime types prototype
+function testMimePrototype(resultBlock) {
+  let correctPrototypes = MimeTypeArray.prototype === navigator.mimeTypes.__proto__;
+  if (navigator.mimeTypes.length > 0)
+    correctPrototypes &= MimeType.prototype === navigator.mimeTypes[0].__proto__;
+
+  writeMimePrototypeResult(resultBlock, correctPrototypes);
+  return correctPrototypes ? HEADFUL : HEADLESS;
+}
+
+function writeMimePrototypeResult(resultBlock, correctPrototypes) {
+  if (correctPrototypes)
+    writeToBlock(resultBlock, `MimeTypeArray and MimeType prototype are consistent`);
+  else
+    writeToBlock(resultBlock, `MimeTypeArray or MimeType prototype aren't consistent`);
+}
+
 
 // Test for languages
 function testLanguages(resultBlock) {
@@ -187,14 +231,6 @@ function testOuter(resultBlock) {
   return (outerHeight === 0 && outerWidth === 0) ? HEADLESS : HEADFUL;
 }
 
-// Test for screenY
-function testScreenY(resultBlock) {
-  let screenY = window.screenY;
-
-  writeToBlock(resultBlock, `ScreenY: ${screenY}`);
-  return screenY === 0 ? HEADLESS : HEADFUL;
-}
-
 // Test for connection-rtt
 function testConnecionRtt(resultBlock) {
   let connection    = navigator.connection;
@@ -255,26 +291,35 @@ function mouseMoveWriteResult(resultBlock, zeroMovement) {
  *  Here is where we execute all the tests specified above
  */
 const tests = [
-  { name: "User Agent",       id: "user-agent",     testFunction: testUserAgent    },
-  { name: "App Version",      id: "app-version",    testFunction: testAppVersion   },
-  { name: "Plugins",          id: "plugins",        testFunction: testPlugins      },
-  { name: "Languages",        id: "languages",      testFunction: testLanguages    },
-  { name: "Webdriver",        id: "webdriver",      testFunction: testWebdriver    },
-  { name: "Time Elapse",      id: "time-elapse",    testFunction: testTimeElapse   },
-  { name: "Chrome",           id: "chrome-element", testFunction: testChrome       },
-  { name: "Permission",       id: "permission",     testFunction: testPermission   },
-  { name: "Devtool Protocol", id: "devtool",        testFunction: testDevtool      },
-  { name: "Broken Image",     id: "image",          testFunction: testImage        },
-  { name: "Outer dimensions", id: "outer",          testFunction: testOuter        },
-  { name: "ScreenY",          id: "screeny",        testFunction: testScreenY      },
-  { name: "Connection Rtt",   id: "connection-rtt", testFunction: testConnecionRtt },
-  { name: "Mouse Move",       id: "mouse-move",     testFunction: testMouseMove    },
+  { name: "User Agent",        id: "user-agent",        testFunction: testUserAgent        },
+  { name: "App Version",       id: "app-version",       testFunction: testAppVersion       },
+  { name: "Plugins",           id: "plugins",           testFunction: testPlugins          },
+  { name: "Plugins Prototype", id: "plugins-prototype", testFunction: testPluginsPrototype },
+  { name: "Mime",              id: "mime",              testFunction: testMime             },
+  { name: "Mime Prototype",    id: "mime-prototype",    testFunction: testMimePrototype    },
+  { name: "Languages",         id: "languages",         testFunction: testLanguages        },
+  { name: "Webdriver",         id: "webdriver",         testFunction: testWebdriver        },
+  { name: "Time Elapse",       id: "time-elapse",       testFunction: testTimeElapse       },
+  { name: "Chrome",            id: "chrome-element",    testFunction: testChrome           },
+  { name: "Permission",        id: "permission",        testFunction: testPermission       },
+  { name: "Devtool Protocol",  id: "devtool",           testFunction: testDevtool          },
+  { name: "Broken Image",      id: "image",             testFunction: testImage            },
+  { name: "Outer dimensions",  id: "outer",             testFunction: testOuter            },
+  { name: "Connection Rtt",    id: "connection-rtt",    testFunction: testConnecionRtt     },
+  { name: "Mouse Move",        id: "mouse-move",        testFunction: testMouseMove        },
 ];
 
 tests.forEach(test => {
   generateTableRow(test.name, test.id);
   testBrowser(test.id, test.testFunction, test.resultFunction);
 });
+
+function generateComment(test, result) {
+  if (/.*-result/.test(test)) {
+    let comment = document.createComment(`${test}: ${result}`);
+    document.body.appendChild(comment);
+  }
+}
 
 // Generate a row for each test
 function generateTableRow(name, id) {
