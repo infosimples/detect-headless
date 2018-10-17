@@ -104,7 +104,7 @@ function testLanguages(resultBlock) {
   writeToBlock(resultBlock, `Detected ${languagesLength} languages and using ${language}`);
   if (!language || languagesLength === 0)
     return HEADLESS;
-  return UNDEFINED;
+  return HEADFUL;
 }
 
 // Test for webdriver (headless browser has this flag true)
