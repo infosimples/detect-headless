@@ -232,7 +232,7 @@ function testOuter(resultBlock) {
 }
 
 // Test for connection-rtt
-function testConnecionRtt(resultBlock) {
+function testConnectionRtt(resultBlock) {
   let connection    = navigator.connection;
   let connectionRtt = connection ? connection.rtt : undefined;
 
@@ -305,7 +305,7 @@ const tests = [
   { name: "Devtool Protocol",  id: "devtool",           testFunction: testDevtool          },
   { name: "Broken Image",      id: "image",             testFunction: testImage            },
   { name: "Outer dimensions",  id: "outer",             testFunction: testOuter            },
-  { name: "Connection Rtt",    id: "connection-rtt",    testFunction: testConnecionRtt     },
+  { name: "Connection Rtt",    id: "connection-rtt",    testFunction: testConnectionRtt     },
   { name: "Mouse Move",        id: "mouse-move",        testFunction: testMouseMove        },
 ];
 
