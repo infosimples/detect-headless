@@ -215,10 +215,13 @@ function testImage(resultBlock) {
   body.appendChild(image);
 
   image.onerror = function(){
+	resultBlock.parentElement.classList.remove("undefined");
+	if(image.width === 0 && image.height === 0)
+      resultBlock.parentElement.classList.add("headless");
+	else
+      resultBlock.parentElement.classList.add("headful");
+  
     writeToBlock(resultBlock, `Broken image has width ${image.width} and height ${image.height}`);
-    if(image.width === 0 && image.height === 0)
-      return HEADLESS;
-    return HEADFUL;
   }
 }
 
